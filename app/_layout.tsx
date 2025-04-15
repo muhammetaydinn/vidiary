@@ -3,44 +3,43 @@ import { useFonts } from 'expo-font';
 import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect } from 'react'; // Ensure React is imported
+import React, { useEffect } from 'react';
 import 'react-native-reanimated';
 import "../global.css";
 import { TouchableOpacity } from 'react-native';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import { initFFmpeg } from '@/services/videoProcessor'; // Import initFFmpeg
+import { initFFmpeg } from '@/services/videoProcessor';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-  // --- Hooks called unconditionally at the top ---
+function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
   const router = useRouter();
   const themeColors = Colors[colorScheme ?? 'light'];
-  // --- End of unconditional hooks ---
 
   useEffect(() => {
     // Initialize FFmpeg when the layout mounts
-    initFFmpeg().catch(err => console.error("Root FFmpeg init failed:", err));
+    initFFmpeg().catch(err => {
+      console.error("Root FFmpeg init failed:", err);
+      // Don't throw here, just log the error
+      // This allows the app to continue even if FFmpeg fails to initialize
+    });
 
     if (loaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]); // Keep loaded dependency for splash screen
+  }, [loaded]);
 
-  // --- Conditional return based on font loading ---
   if (!loaded) {
     return null;
   }
-  // --- End of conditional return ---
 
-  // --- Main component return ---
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
@@ -95,5 +94,6 @@ export default function RootLayout() {
       <StatusBar style="auto" />
     </ThemeProvider>
   );
-  // --- End of main component return ---
-} // Closing brace for the RootLayout function
+}
+
+export default RootLayout;

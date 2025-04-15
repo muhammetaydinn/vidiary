@@ -51,8 +51,19 @@ export default function SelectVideoScreen() {
 
         // --- Copy video to persistent location ---
         const tempUri = selectedVideo.uri;
-        const fileExtension = tempUri.split('.').pop();
-        const fileName = `${Date.now()}.${fileExtension}`; // Simple unique name
+
+        // Add robust URI validation
+        if (!tempUri || typeof tempUri !== 'string') {
+          console.error('Invalid video URI:', tempUri);
+          Alert.alert('Error', 'Invalid video file selected');
+          setIsLoading(false);
+          return;
+        }
+
+        // Safely handle file extension extraction
+        const uriParts = tempUri.split('.');
+        const fileExtension = uriParts.length > 1 ? uriParts.pop()?.toLowerCase() : 'mp4';
+        const fileName = `${Date.now()}.${fileExtension || 'mp4'}`;
         const persistentUri = `${FileSystem.documentDirectory}videos/${fileName}`;
 
         // Ensure the target directory exists

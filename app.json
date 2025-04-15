@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "vidiary",
+    "name": "vidiary-app",
     "slug": "vidiary",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -34,7 +34,15 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraProguardRules": "-keep class com.arthenica.ffmpegkit.** { *; }"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
