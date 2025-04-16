@@ -43,8 +43,22 @@ function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        {/* Tab Navigator */}
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        {/* Main Screen */}
+        <Stack.Screen
+          name="index"
+          options={{
+            headerTitleAlign: 'center',
+            title: 'V I D I A R Y',
+            headerTitleStyle: {
+              fontFamily: 'SpaceMono',
+              fontSize: 20,
+            },
+            headerStyle: {
+              backgroundColor: themeColors.background,
+            },
+            headerTintColor: themeColors.text,
+          }}
+        />
 
         {/* Video Screens */}
         <Stack.Screen name="video/[id]" options={{ title: 'Video Details' }} />
