@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, Button, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -12,12 +12,10 @@ export default function CropVideoScreen() {
   const router = useRouter();
   const { videoUri, videoDuration } = useLocalSearchParams<{ videoUri: string; videoDuration: string }>();
   const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'light'];
 
   const videoPlayerRef = useRef<Video>(null);
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(5);
-  const [isLoading, setIsLoading] = useState(false);
 
   const duration = parseFloat(videoDuration || '0');
   const segmentDuration = 5;
@@ -89,22 +87,17 @@ export default function CropVideoScreen() {
         segmentDuration={segmentDuration}
         onSegmentChange={handleSegmentChange}
       />
+      <TouchableOpacity style={styles.selectButton} onPress={handleNext}>
+        <ThemedText style={styles.selectButtonText}>Next: Add Details</ThemedText>
+      </TouchableOpacity>
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Next: Add Details"
-          onPress={handleNext}
-          color={themeColors.tint}
-          disabled={isLoading}
-        />
-        {isLoading && <ActivityIndicator size="small" color={themeColors.tint} style={styles.loader} />}
-      </View>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    top: 10,
     flex: 1,
   },
   centerContainer: {
@@ -130,5 +123,21 @@ const styles = StyleSheet.create({
     aspectRatio: 16 / 9,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  selectButton: {
+    top: 10,
+    margin: 20,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#000',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5)',
+  },
+  selectButtonText: {
+    color: '#000',
   },
 });

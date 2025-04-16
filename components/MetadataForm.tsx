@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Button, Text } from 'react-native';
+import { TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
 import { Colors } from '@/constants/Colors';
@@ -60,7 +60,7 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({
         <TextInput
           style={[
             styles.input,
-            { 
+            {
               borderColor: errors.name ? 'red' : themeColors.border,
               color: themeColors.text,
               backgroundColor: themeColors.inputBackground,
@@ -79,7 +79,7 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({
         <TextInput
           style={[
             styles.textArea,
-            { 
+            {
               borderColor: errors.description ? 'red' : themeColors.border,
               color: themeColors.text,
               backgroundColor: themeColors.inputBackground,
@@ -95,7 +95,9 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({
         {errors.description && <Text style={styles.errorText}>{errors.description}</Text>}
       </ThemedView>
 
-      <Button title={submitButtonText} onPress={handleSubmit} color={themeColors.tint} />
+      <TouchableOpacity style={styles.selectButton} onPress={handleSubmit}>
+        <ThemedText style={styles.selectButtonText}>{submitButtonText} </ThemedText>
+      </TouchableOpacity>
     </ThemedView>
   );
 };
@@ -130,21 +132,20 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 12,
   },
+  selectButton: {
+    top: 10,
+    margin: 20,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#000',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5)',
+  },
+  selectButtonText: {
+    color: '#000',
+  },
 });
-
-// Add inputBackground and placeholder colors to Colors.ts if they don't exist
-// Example for Colors.ts:
-// export const Colors = {
-//   light: {
-//     // ... other colors
-//     border: '#ccc',
-//     inputBackground: '#f0f0f0',
-//     placeholder: '#999',
-//   },
-//   dark: {
-//     // ... other colors
-//     border: '#555',
-//     inputBackground: '#333',
-//     placeholder: '#777',
-//   },
-// };

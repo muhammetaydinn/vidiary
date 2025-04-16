@@ -17,7 +17,7 @@ export default function HomeScreen() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use Zustand store for state management
   const { videos, addVideo } = useVideoStore();
 
@@ -84,9 +84,12 @@ export default function HomeScreen() {
           </ThemedView>
         }
       />
-      
+
       <TouchableOpacity
-        style={[styles.fab, { backgroundColor: '#fff' }]}
+        style={[styles.fab, {
+          backgroundColor: '#fff',
+          boxShadow: '0 2px 50px rgba(0, 0, 0, 0.9)',
+        }]}
         onPress={handleAddVideo}
         activeOpacity={0.8}
       >
