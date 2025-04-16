@@ -1,151 +1,97 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Button, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors } from '@/constants/Colors';
-import { getVideoInfo } from '@/services/videoProcessor';
-import * as FileSystem from 'expo-file-system'; // Import FileSystem
+import React, { useState } from 'react'
+import { Alert, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { Stack, useRouter } from 'expo-router'
+import * as ImagePicker from 'expo-image-picker'
+import { ThemedView } from '@/components/ThemedView'
+import { ThemedText } from '@/components/ThemedText'
+import { useColorScheme } from '@/hooks/useColorScheme'
+import { Colors } from '@/constants/Colors'
+import * as FileSystem from 'expo-file-system'
 
 export default function SelectVideoScreen() {
-  const router = useRouter();
-  const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'light'];
-  
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
+  const colorScheme = useColorScheme()
+  const themeColors = Colors[colorScheme ?? 'light']
+  const [isLoading, setIsLoading] = useState(false)
 
   const pickVideo = async () => {
-    // Request permission to access media library
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (status !== 'granted') {
-      Alert.alert('Permission Required', 'Sorry, we need camera roll permissions to make this work!');
-      return;
+      Alert.alert('Permission Required', 'Sorry, we need camera roll permissions to make this work!')
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Videos, // Reverted to deprecated but working option
-        allowsEditing: false, // We'll handle cropping ourselves
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsEditing: false,
         quality: 1,
-      });
+      })
 
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const selectedVideo = result.assets[0];
-        
-        // Get video duration using FFmpeg
-        // const videoInfo = await getVideoInfo(selectedVideo.uri);
-        // const duration = videoInfo.duration;
-        
-        // Note: getVideoInfo using FFmpeg might be slow. 
-        // Expo's ImagePicker provides duration directly.
-        const duration = selectedVideo.duration ? selectedVideo.duration / 1000 : 0; // Convert ms to seconds
+      if (!result.canceled && result.assets?.length > 0) {
+        const selectedVideo = result.assets[0]
+        const duration = selectedVideo.duration ? selectedVideo.duration / 1000 : 0
 
         if (duration < 5) {
-           Alert.alert('Video Too Short', 'Please select a video that is at least 5 seconds long.');
-           setIsLoading(false);
-           return;
+          Alert.alert('Video Too Short', 'Please select a video that is at least 5 seconds long.')
+          setIsLoading(false)
+          return
         }
 
-        // --- Copy video to persistent location ---
-        const tempUri = selectedVideo.uri;
-
-        // Add robust URI validation
+        const tempUri = selectedVideo.uri
         if (!tempUri || typeof tempUri !== 'string') {
-          console.error('Invalid video URI:', tempUri);
-          Alert.alert('Error', 'Invalid video file selected');
-          setIsLoading(false);
-          return;
+          console.error('Invalid video URI:', tempUri)
+          Alert.alert('Error', 'Invalid video file selected')
+          setIsLoading(false)
+          return
         }
 
-        // Safely handle file extension extraction
-        const uriParts = tempUri.split('.');
-        const fileExtension = uriParts.length > 1 ? uriParts.pop()?.toLowerCase() : 'mp4';
-        const fileName = `${Date.now()}.${fileExtension || 'mp4'}`;
-        const persistentUri = `${FileSystem.documentDirectory}videos/${fileName}`;
+        const uriParts = tempUri.split('.')
+        const fileExtension = uriParts.length > 1 ? uriParts.pop()?.toLowerCase() : 'mp4'
+        const fileName = `${Date.now()}.${fileExtension || 'mp4'}`
+        const persistentUri = `${FileSystem.documentDirectory}videos/${fileName}`
 
-        // Ensure the target directory exists
-        const dirInfo = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}videos/`);
+        const dirInfo = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}videos/`)
         if (!dirInfo.exists) {
-          await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}videos/`, { intermediates: true });
+          await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}videos/`, { intermediates: true })
         }
 
         await FileSystem.copyAsync({
           from: tempUri,
           to: persistentUri,
-        });
-        // --- End copy ---
+        })
 
-        // Navigate to the cropping step with the PERSISTENT video URI and duration
         router.push({
           pathname: '/modal/crop/crop',
-          params: { videoUri: persistentUri, videoDuration: duration }, // Use persistentUri
-        });
+          params: { videoUri: persistentUri, videoDuration: duration },
+        })
       }
     } catch (error) {
-      console.error('Error picking video:', error);
-      Alert.alert('Error', 'Failed to select video.');
+      console.error('Error picking video:', error)
+      Alert.alert('Error', 'Failed to select video.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView className="flex-1">
       <Stack.Screen options={{ title: 'Select Video' }} />
-      <ThemedView style={styles.content}>
-        <ThemedText type="title" style={styles.title}>Select a Video</ThemedText>
-        <ThemedText style={styles.subtitle}>
+      <ThemedView className="flex-1 justify-center items-center p-5">
+        <ThemedText type="title" className="mb-4">Select a Video</ThemedText>
+        <ThemedText className="text-center mb-8 opacity-80">
           Choose a video from your library to crop a 5-second segment.
         </ThemedText>
-        
+
         {isLoading ? (
-          <ActivityIndicator size="large" color={themeColors.tint} style={styles.loader} />
+          <ActivityIndicator size="large" color={themeColors.tint} className="mt-5" />
         ) : (
-          <TouchableOpacity style={styles.selectButton} onPress={pickVideo}>
-            <ThemedText style={styles.selectButtonText}>Select Video from Library</ThemedText>
+          <TouchableOpacity onPress={pickVideo} className="bg-white border-2 border-black px-4 py-2 rounded shadow-lg">
+            <ThemedText className="text-black">Select Video from Library</ThemedText>
           </TouchableOpacity>
         )}
       </ThemedView>
     </ThemedView>
-  );
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    marginBottom: 16,
-  },
-  subtitle: {
-    textAlign: 'center',
-    marginBottom: 32,
-    opacity: 0.8,
-  },
-  loader: {
-    marginTop: 20,
-  },
-  selectButton: {
-    backgroundColor: '#fff',
-    borderWidth: 2,
-    borderColor: '#000',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5)',
-  },
-  selectButtonText: {
-    color: '#000',
-  },
-});

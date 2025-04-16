@@ -1,137 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, View, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { VideoCard } from '@/components/VideoCard';
-import { useVideoStore, VideoEntry } from '@/store/videoStore';
-import { initDatabase, getVideos, videoTableToEntry } from '@/services/database';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors } from '@/constants/Colors';
+import React, { useEffect, useState } from 'react'
+import { FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { useRouter } from 'expo-router'
+import { ThemedView } from '@/components/ThemedView'
+import { ThemedText } from '@/components/ThemedText'
+import { VideoCard } from '@/components/VideoCard'
+import { useVideoStore, VideoEntry } from '@/store/videoStore'
+import { initDatabase, getVideos, videoTableToEntry } from '@/services/database'
+import { IconSymbol } from '@/components/ui/IconSymbol'
+import { useColorScheme } from '@/hooks/useColorScheme'
+import { Colors } from '@/constants/Colors'
 
 export default function HomeScreen() {
-  const router = useRouter();
-  const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'light'];
+  const router = useRouter()
+  const colorScheme = useColorScheme()
+  const themeColors = Colors[colorScheme ?? 'light']
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Use Zustand store for state management
-  const { videos, addVideo } = useVideoStore();
+  const { videos, addVideo } = useVideoStore()
 
-  // Load videos from SQLite on initial mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        await initDatabase();
-        const dbVideos = await getVideos();
-        // Populate Zustand store from SQLite if it's empty
+        await initDatabase()
+        const dbVideos = await getVideos()
         if (videos.length === 0 && dbVideos.length > 0) {
           dbVideos.forEach(dbVideo => {
-            addVideo(videoTableToEntry(dbVideo));
-          });
+            addVideo(videoTableToEntry(dbVideo))
+          })
         }
-        setIsLoading(false);
+        setIsLoading(false)
       } catch (err) {
-        console.error('Failed to load videos:', err);
-        setError('Failed to load videos.');
-        setIsLoading(false);
+        console.error('Failed to load videos:', err)
+        setError('Something went wrong... Try again later!')
+        setIsLoading(false)
       }
-    };
-    loadData();
-  }, []); // Run only once on mount
+    }
+    loadData()
+  }, [])
 
   const handleAddVideo = () => {
-    // Navigate to the first step of the crop modal
-    router.push('/modal/crop');
-  };
+    router.push('/modal/crop')
+  }
 
   const handleVideoPress = (video: VideoEntry) => {
-    router.push(`/video/${video.id}`);
-  };
+    router.push(`/video/${video.id}`)
+  }
 
   if (isLoading) {
     return (
-      <ThemedView style={styles.centerContainer}>
+      <ThemedView className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color={themeColors.tint} />
       </ThemedView>
-    );
+    )
   }
 
   if (error) {
     return (
-      <ThemedView style={styles.centerContainer}>
-        <ThemedText type="subtitle">{error}</ThemedText>
+      <ThemedView className="flex-1 justify-center items-center">
+        <ThemedText className="text-lg font-semibold text-center text-red-500">{error}</ThemedText>
       </ThemedView>
-    );
+    )
   }
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView className="flex-1 bg-background">
       <FlatList
         data={videos}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <VideoCard video={item} onPress={() => handleVideoPress(item)} />
         )}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={{ padding: 16 }}
         ListEmptyComponent={
-          <ThemedView style={styles.emptyContainer}>
-            <ThemedText type="subtitle">No videos yet!</ThemedText>
-            <ThemedText>Tap the + button to add your first video diary entry.</ThemedText>
+          <ThemedView className="flex-1 justify-center items-center mt-12">
+            <ThemedText className="text-xl font-semibold text-center">No videos yet... 😔</ThemedText>
+            <ThemedText className="text-base text-center mt-2">
+              Click the + button and start recording your first video diary!
+            </ThemedText>
           </ThemedView>
         }
       />
 
       <TouchableOpacity
-        style={[styles.fab, {
-          backgroundColor: '#fff',
-          boxShadow: '0 2px 50px rgba(0, 0, 0, 0.9)',
-        }]}
+        className="absolute bottom-8 right-8 w-16 h-16 rounded-full justify-center items-center shadow-lg bg-white border-2 border-black"
         onPress={handleAddVideo}
         activeOpacity={0.8}
       >
-        <IconSymbol name="plus" size={24} color="#000" />
+        <IconSymbol name="plus" size={24} color={themeColors.tint} />
       </TouchableOpacity>
     </ThemedView>
-  );
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  listContent: {
-    padding: 16,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 50,
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-    borderWidth: 2,
-    borderColor: '#000',
-  },
-});
