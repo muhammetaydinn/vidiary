@@ -133,26 +133,20 @@ export default function CropVideoScreen() {
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ title: 'Crop Video (5s)' }} />
 
-      <VideoPlayer
-        ref={videoPlayerRef} // Use standard ref prop now
-        uri={videoUri}
-        style={styles.videoPlayer}
-        // Don't autoplay initially, let scrubbing handle seeking
-        autoPlay={false}
-        // We handle looping manually based on segment
-        loop={false}
-        useNativeControls={false} // Disable native controls
-        // Add playback status update handler if needed for more complex logic
-        // onPlaybackStatusUpdate={(status) => {
-        //   if (status.isLoaded && status.isPlaying) {
-        //     checkPlaybackPosition(status);
-        //   }
-        // }}
-      />
-      {/* Custom Play/Pause Button Overlay */}
-      <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
-         <IconSymbol name={isPlaying ? "pause.fill" : "play.fill"} size={40} color="rgba(255, 255, 255, 0.8)" />
-      </TouchableOpacity>
+      <View style={styles.videoWrapper}>
+        <VideoPlayer
+          ref={videoPlayerRef}
+          uri={videoUri}
+          style={styles.videoPlayer}
+          autoPlay={false}
+          loop={false}
+          useNativeControls={false}
+        />
+        <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
+          <IconSymbol name={isPlaying ? "pause.fill" : "play.fill"} size={40} color="rgba(255, 255, 255, 0.8)" />
+        </TouchableOpacity>
+      </View>
+
 
       <VideoScrubber
         videoUri={videoUri}
@@ -194,20 +188,27 @@ const styles = StyleSheet.create({
   loader: {
     marginTop: 8,
   },
+  videoContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  videoWrapper: {
+    position: 'relative',
+    width: '100%',
+    aspectRatio: 16 / 9, // ya da videonun oranına göre ayarla
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   playPauseButton: {
     position: 'absolute',
-    top: '40%', // Adjust position as needed
-    left: '50%',
-    marginLeft: -25, // Center the button (half of width)
-    marginTop: -25, // Center the button (half of height)
     width: 50,
     height: 50,
     borderRadius: 25,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10, // Ensure it's above the video
-  },
+    zIndex: 1,
+  }
+
 });
 
-// Need to import IconSymbol

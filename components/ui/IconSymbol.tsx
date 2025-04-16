@@ -16,6 +16,8 @@ const MAPPING = {
   'plus': 'add',
   'pencil': 'edit',
   'trash': 'delete',
+  'play.fill': 'play-arrow',
+  'pause.fill': 'pause',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
