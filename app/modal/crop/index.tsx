@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Button, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Button, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { ThemedView } from '@/components/ThemedView';
@@ -104,11 +104,9 @@ export default function SelectVideoScreen() {
         {isLoading ? (
           <ActivityIndicator size="large" color={themeColors.tint} style={styles.loader} />
         ) : (
-          <Button 
-            title="Select Video from Library" 
-            onPress={pickVideo} 
-            color={themeColors.tint} 
-          />
+          <TouchableOpacity style={styles.selectButton} onPress={pickVideo}>
+            <ThemedText style={styles.selectButtonText}>Select Video from Library</ThemedText>
+          </TouchableOpacity>
         )}
       </ThemedView>
     </ThemedView>
@@ -135,5 +133,19 @@ const styles = StyleSheet.create({
   },
   loader: {
     marginTop: 20,
+  },
+  selectButton: {
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#000',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5)',
+  },
+  selectButtonText: {
+    color: '#000',
   },
 });

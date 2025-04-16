@@ -86,11 +86,11 @@ export default function HomeScreen() {
       />
       
       <TouchableOpacity
-        style={[styles.fab, { backgroundColor: themeColors.tint }]}
+        style={[styles.fab, { backgroundColor: '#fff' }]}
         onPress={handleAddVideo}
         activeOpacity={0.8}
       >
-        <IconSymbol name="plus" size={24} color="#ffffff" />
+        <IconSymbol name="plus" size={24} color="#000" />
       </TouchableOpacity>
     </ThemedView>
   );
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     right: 30,
     width: 60,
     height: 60,
-    borderRadius: 30,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -128,5 +128,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
+    borderWidth: 2,
+    borderColor: '#000',
   },
 });

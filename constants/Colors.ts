@@ -17,6 +17,7 @@ export const Colors = {
     border: '#ccc',
     inputBackground: '#f0f0f0',
     placeholder: '#999',
+    error: '#ff3b30',
   },
   dark: {
     text: '#ECEDEE',
@@ -28,5 +29,6 @@ export const Colors = {
     border: '#555',
     inputBackground: '#333',
     placeholder: '#777',
+    error: '#ff453a',
   },
 };
