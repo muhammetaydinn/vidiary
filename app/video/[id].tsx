@@ -130,10 +130,10 @@ export default function VideoDetailsScreen() {
           headerRight: () => (
             <View style={styles.headerButtons}>
               <TouchableOpacity onPress={handleEdit} style={styles.headerButton}>
-                <IconSymbol name="pencil" size={22} color={themeColors.tint} />
+                <IconSymbol name="pencil" size={25} color={themeColors.text} />
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDelete} style={styles.headerButton}>
-                <IconSymbol name="trash" size={22} color={themeColors.tint} />
+                <IconSymbol name="trash" size={25} color={themeColors.text} />
               </TouchableOpacity>
             </View>
           ),
