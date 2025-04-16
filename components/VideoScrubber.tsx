@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, TouchableWithoutFeedback, Animated, TextInput } from 'react-native';
+import { View, Dimensions, TouchableWithoutFeedback, Animated } from 'react-native';
 import { Video } from 'expo-av';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
@@ -65,34 +65,30 @@ export const VideoScrubber: React.FC<VideoScrubberProps> = ({
   }, [scrubberWidth, videoDuration, segmentDuration, position]);
 
   return (
-    <ThemedView style={styles.container}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, width: '100%', paddingVertical: 4 }}>
-        <ThemedText style={{ color: themeColor }}>
+    <ThemedView className="w-full px-4">
+      <View className="flex-row justify-between px-2 w-full py-1">
+        <ThemedText className={`text-${themeColor}`}>
           {displayStartTime}
         </ThemedText>
-        <ThemedText style={{ color: themeColor }}>
+        <ThemedText className={`text-${themeColor}`}>
           {displayEndTime}
         </ThemedText>
       </View>
       <View
-        style={styles.scrubberContainer}
+        className="h-16 w-full"
         onLayout={(e) => setScrubberWidth(e.nativeEvent.layout.width)}
       >
-        {/* Timeline background */}
         <TouchableWithoutFeedback onPress={handlePress}>
-          <View style={styles.timeline}>
-            {/* Selection area */}
+          <View className="absolute left-0 right-0 h-full bg-gray-400 rounded-lg">
             <Animated.View
-              style={[
-                styles.selection,
-                {
-                  left: `${position}%`,
-                  width: `${selectionWidth}%`,
-                },
-              ]}
+              className="absolute top-0 h-full bg-white justify-center items-center border border-black rounded-lg"
+              style={{
+                left: `${position}%`,
+                width: `${selectionWidth}%`,
+              }}
             >
-              <View style={styles.selectionInner}>
-                <View style={styles.innerContainer} />
+              <View className="flex-1 w-full px-4 py-1 justify-center items-center">
+                <View className="flex-row justify-between px-2 flex-1 w-full bg-red-500/50 border border-black" />
               </View>
             </Animated.View>
           </View>
@@ -101,55 +97,3 @@ export const VideoScrubber: React.FC<VideoScrubberProps> = ({
     </ThemedView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    paddingHorizontal: 16,
-  },
-  scrubberContainer: {
-    height: 70,
-    width: '100%',
-  },
-  timeline: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: '100%',
-    backgroundColor: 'grey',
-    borderRadius: 4,
-  },
-  selection: {
-    position: 'absolute',
-    top: 0,
-    height: '100%',
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 4,
-  },
-  selectionInner: {
-    flex: 1,
-    width: '100%',
-    paddingHorizontal: 16,
-    paddingVertical: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  innerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 8,
-    flex: 1,
-    width: '100%',
-    backgroundColor: 'rgba(255, 0, 0, 0.5)',
-    borderWidth: 1,
-  },
-  durationText: {
-    textAlign: 'center',
-    marginTop: 15,
-    color: 'black',
-  },
-});

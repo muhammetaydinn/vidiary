@@ -1,11 +1,11 @@
-import { Text, type TextProps, StyleSheet } from 'react-native';
-
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { Text, type TextProps } from 'react-native';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+  className?: string;
 };
 
 export function ThemedText({
@@ -13,48 +13,46 @@ export function ThemedText({
   lightColor,
   darkColor,
   type = 'default',
+  className = '',
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const colorScheme = useColorScheme() ?? 'light';
+  const textColor = colorScheme === 'light'
+    ? lightColor || 'text-[#11181C]'
+    : darkColor || 'text-[#ECEDEE]';
+
+  let typeClasses = '';
+
+  switch (type) {
+    case 'default':
+      typeClasses = 'text-base leading-6';
+      break;
+    case 'defaultSemiBold':
+      typeClasses = 'text-base leading-6 font-semibold';
+      break;
+    case 'title':
+      typeClasses = 'text-3xl font-bold leading-8';
+      break;
+    case 'subtitle':
+      typeClasses = 'text-xl font-bold';
+      break;
+    case 'link':
+      typeClasses = 'leading-[30px] text-base text-[#0a7ea4] dark:text-white';
+      break;
+  }
+
+  // Only apply the default text color if custom colors aren't provided
+  const colorClass = (lightColor || darkColor) ? '' : (colorScheme === 'light' ? 'text-[#11181C]' : 'text-[#ECEDEE]');
 
   return (
     <Text
+      className={`${typeClasses} ${colorClass} ${className}`}
       style={[
-        { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
+        // If custom colors are provided as props, apply them through style
+        (lightColor || darkColor) && { color: colorScheme === 'light' ? lightColor : darkColor },
         style,
       ]}
       {...rest}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
-});

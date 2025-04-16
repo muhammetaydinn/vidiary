@@ -1,11 +1,10 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Image, View } from 'react-native';
-import { ThemedText } from './ThemedText';
-import { ThemedView } from './ThemedView';
+import { TouchableOpacity, Image, View, Text } from 'react-native';
 import { VideoEntry } from '@/store/videoStore';
 import { IconSymbol } from './ui/IconSymbol';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
+
 
 interface VideoCardProps {
   video: VideoEntry;
@@ -17,7 +16,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, onPress }) => {
   const themeColor = Colors[colorScheme ?? 'light'].tint;
 
   // Format date to a readable string
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | string) => { // Allow string input for parsing
     // Ensure date is a valid Date object before formatting
     if (!(date instanceof Date) || isNaN(date.getTime())) {
       // Attempt to parse if it's a string representation
@@ -42,106 +41,46 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, onPress }) => {
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      className="w-full mb-4"
       activeOpacity={0.7}
-      onPress={onPress} // Use onPress for navigation logic in the parent component
+      onPress={onPress}
     >
-      <ThemedView style={styles.card}>
-        <View style={styles.thumbnailContainer}>
+      <View className="rounded-xl overflow-hidden shadow-lg bg-white dark:bg-zinc-800 elevation-2">
+        <View className="relative w-full h-44">
           {video.thumbnailUri ? (
             <Image
               source={{ uri: video.thumbnailUri }}
-              style={styles.thumbnail}
+              className="w-full h-full"
               resizeMode="cover"
             />
           ) : (
-            <View style={[styles.placeholderThumbnail, { backgroundColor: themeColor }]}>
+            <View style={{ backgroundColor: themeColor }} className="w-full h-full justify-center items-center">
               <IconSymbol name="play.fill" size={40} color="#ffffff" />
             </View>
           )}
-          <View style={styles.durationBadge}>
-            <ThemedText style={styles.durationText}>
+          <View className="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded">
+            <Text className="text-white text-xs">
               {video.duration ? `${video.duration.toFixed(1)}s` : 'N/A'}
-            </ThemedText>
+            </Text>
           </View>
         </View>
 
-        <View style={styles.contentContainer}>
-          <ThemedText type="defaultSemiBold" style={styles.title}>
+        <View className="p-3">
+          <Text className="text-base font-semibold mb-1 text-black dark:text-white">
             {truncateText(video.name, 30)}
-          </ThemedText>
+          </Text>
 
           {video.description ? (
-            <ThemedText style={styles.description}>
+            <Text className="text-sm mb-2 opacity-80 text-black dark:text-white">
               {truncateText(video.description, 50)}
-            </ThemedText>
+            </Text>
           ) : null}
 
-          <ThemedText style={styles.date}>
+          <Text className="text-xs opacity-60 text-black dark:text-white">
             {formatDate(video.createdAt)}
-          </ThemedText>
+          </Text>
         </View>
-      </ThemedView>
+      </View>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginBottom: 16,
-  },
-  card: {
-    borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  thumbnailContainer: {
-    position: 'relative',
-    width: '100%',
-    height: 180,
-  },
-  thumbnail: {
-    width: '100%',
-    height: '100%',
-  },
-  placeholderThumbnail: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  durationBadge: {
-    position: 'absolute',
-    bottom: 8,
-    right: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  durationText: {
-    color: '#ffffff',
-    fontSize: 12,
-  },
-  contentContainer: {
-    padding: 12,
-  },
-  title: {
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  description: {
-    fontSize: 14,
-    marginBottom: 8,
-    opacity: 0.8,
-  },
-  date: {
-    fontSize: 12,
-    opacity: 0.6,
-  },
-});
