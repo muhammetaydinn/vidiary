@@ -130,8 +130,7 @@ export default function VideoDetailsScreen() {
         }}
       />
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-        <VideoPlayer uri={video.uri} style={{ marginBottom: 16 }} autoPlay />
-
+        <VideoPlayer uri={video.uri} style='mb-4' autoPlay />
         <View className="px-4">
           <ThemedText type="title" className="mb-2">{video.name}</ThemedText>
           {video.description && (
