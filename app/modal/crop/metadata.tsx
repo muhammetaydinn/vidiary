@@ -22,10 +22,9 @@ interface MetadataFormData {
 
 function MetadataScreenContent() {
   const router = useRouter()
-  const { videoUri, startTime, duration } = useLocalSearchParams<{
+  const { videoUri, startTime } = useLocalSearchParams<{
     videoUri: string
     startTime: string
-    duration: string
   }>()
 
   const colorScheme = useColorScheme()
@@ -51,13 +50,12 @@ function MetadataScreenContent() {
 
   const cropMutation = useMutation({
     mutationFn: async (data: MetadataFormData) => {
-      if (!videoUri || !startTime || !duration) throw new Error('Missing video parameters.')
+      if (!videoUri || !startTime) throw new Error('Missing video parameters.')
 
       setIsProcessing(true)
       const processedVideo = await cropVideo({
         videoUri,
         startTime: parseFloat(startTime),
-        duration: parseFloat(duration),
       })
 
       const newVideoEntry: VideoEntry = {
@@ -67,7 +65,7 @@ function MetadataScreenContent() {
         uri: processedVideo.uri,
         thumbnailUri: processedVideo.thumbnailUri,
         createdAt: new Date(),
-        duration: processedVideo.duration,
+        duration: 5,
       }
 
       await insertVideo(videoEntryToTable(newVideoEntry))
@@ -96,7 +94,7 @@ function MetadataScreenContent() {
     cropMutation.mutate(data)
   }
 
-  if (!videoUri || !startTime || !duration) {
+  if (!videoUri || !startTime) {
     return (
       <ThemedView className="flex-1 justify-center items-center">
         <ThemedText type="subtitle">Missing video parameters.</ThemedText>

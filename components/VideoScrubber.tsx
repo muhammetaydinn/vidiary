@@ -9,14 +9,12 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 interface VideoScrubberProps {
   videoUri: string;
   videoDuration: number; // in seconds
-  segmentDuration?: number; // in seconds, default 5
   onSegmentChange?: (startTime: number, endTime: number) => void;
 }
 
 export const VideoScrubber: React.FC<VideoScrubberProps> = ({
   videoUri,
   videoDuration,
-  segmentDuration = 5,
   onSegmentChange,
 }) => {
   const colorScheme = useColorScheme();
@@ -26,6 +24,7 @@ export const VideoScrubber: React.FC<VideoScrubberProps> = ({
   const videoRef = useRef<Video>(null);
   const [scrubberWidth, setScrubberWidth] = useState(0);
   const [position, setPosition] = useState(0); // Percentage
+  const segmentDuration = 5; // Fixed segment duration
   const [selectionWidth, setSelectionWidth] = useState(segmentDuration / videoDuration * 100);
 
   const [displayStartTime, setDisplayStartTime] = useState('00:00');

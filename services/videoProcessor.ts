@@ -11,7 +11,6 @@ import { nanoid } from "nanoid/non-secure"; // Use non-secure import
 export interface CropVideoParams {
   videoUri: string;
   startTime: number; // in seconds
-  duration: number; // in seconds (default 5)
   outputFileName?: string;
 }
 
@@ -19,7 +18,7 @@ export interface CropVideoParams {
 export interface ProcessedVideo {
   uri: string;
   thumbnailUri: string;
-  duration: number;
+  duration: number; // Fixed duration of 5 seconds
 }
 
 let isInitialized = false;
@@ -113,7 +112,6 @@ export const generateThumbnail = async (
 export const cropVideo = async ({
   videoUri,
   startTime,
-  duration = 5,
   outputFileName,
 }: CropVideoParams): Promise<ProcessedVideo> => {
   try {
@@ -123,6 +121,8 @@ export const cropVideo = async ({
 
     const videoId = outputFileName || nanoid();
     const outputPath = `${FileSystem.documentDirectory}videos/${videoId}.mp4`;
+
+    const duration = 5; // Fixed duration
 
     const command = `-ss ${startTime} -i "${videoUri}" -t ${duration} -c:v mpeg4 -c:a aac -b:a 128k "${outputPath}"`;
 

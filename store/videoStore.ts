@@ -9,7 +9,7 @@ export interface VideoEntry {
   uri: string;
   thumbnailUri: string;
   createdAt: Date;
-  duration: number;
+  duration: number; // Fixed duration of 5 seconds
 }
 
 interface VideoStore {
