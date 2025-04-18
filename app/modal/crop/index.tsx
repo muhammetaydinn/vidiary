@@ -24,7 +24,7 @@ export default function SelectVideoScreen() {
     setIsLoading(true)
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        mediaTypes: ['videos'],
         allowsEditing: false,
         quality: 1,
       })
