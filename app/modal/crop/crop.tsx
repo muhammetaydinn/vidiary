@@ -3,9 +3,8 @@ import { Alert, TouchableOpacity } from 'react-native'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { ThemedView } from '@/components/ThemedView'
 import { ThemedText } from '@/components/ThemedText'
-import { Video } from 'expo-av'
+import { ResizeMode, Video } from 'expo-av'
 import { VideoScrubber } from '@/components/VideoScrubber'
-import { useColorScheme } from '@/hooks/useColorScheme'
 
 export default function CropVideoScreen() {
   const router = useRouter()
@@ -66,7 +65,7 @@ export default function CropVideoScreen() {
           ref={videoPlayerRef}
           source={{ uri: videoUri }}
           style={{ width: '100%', height: '100%' }}
-          resizeMode="contain"
+          resizeMode={ResizeMode.CONTAIN}
           isLooping={false}
           useNativeControls={true}
           onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
