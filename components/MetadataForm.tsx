@@ -18,12 +18,14 @@ interface MetadataFormProps {
   initialData?: Partial<MetadataFormData>;
   onSubmit: (data: MetadataFormData) => void;
   submitButtonText?: string;
+  disabled?: boolean;
 }
 
 export const MetadataForm: React.FC<MetadataFormProps> = ({
   initialData = {},
   onSubmit,
   submitButtonText = 'Save',
+  disabled = false,
 }) => {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -97,12 +99,14 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({
       <TouchableOpacity
         className="relative top-[10px] m-[20px] bg-white border-2 border-black px-[10px] py-[5px] rounded-[5px] flex justify-center items-center shadow-2xl"
         onPress={handleSubmit}
+        disabled={disabled}
         style={{
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 10 },
           shadowOpacity: 0.5,
           shadowRadius: 40,
           elevation: 5,
+          opacity: disabled ? 0.5 : 1, // Reduce opacity when disabled
         }}
       >
         <ThemedText className="text-black">{submitButtonText}</ThemedText>

@@ -29,7 +29,7 @@ function MetadataScreenContent() {
 
   const colorScheme = useColorScheme()
   const themeColors = Colors[colorScheme ?? 'light']
-  const { addVideo: addStoreVideo } = useVideoStore()
+  const { addVideo: addStoreVideo, loadVideos } = useVideoStore()
 
   const [isProcessing, setIsProcessing] = useState(false)
   const [isFFmpegReady, setIsFFmpegReady] = useState(false)
@@ -76,6 +76,8 @@ function MetadataScreenContent() {
     onSuccess: () => {
       setIsProcessing(false)
       Alert.alert('Success', 'Video cropped and saved!')
+      // Refresh video list after successful save
+      loadVideos();
       router.dismissAll()
       router.replace('/')
     },
@@ -115,6 +117,7 @@ function MetadataScreenContent() {
                 ? 'Crop & Save Video'
                 : 'Initializing...'
           }
+          disabled={isProcessing}
         />
 
         {!isFFmpegReady && !isProcessing && (

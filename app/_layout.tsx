@@ -11,6 +11,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol'
 import { useColorScheme } from '@/hooks/useColorScheme'
 import { Colors } from '@/constants/Colors'
 import { initFFmpeg } from '@/services/videoProcessor'
+import { useVideoStore } from '@/store/videoStore';
 
 SplashScreen.preventAutoHideAsync()
 
@@ -21,11 +22,14 @@ export default function RootLayout() {
   })
   const router = useRouter()
   const themeColors = Colors[colorScheme ?? 'light']
+  const { loadVideos } = useVideoStore();
 
   useEffect(() => {
     initFFmpeg().catch(err => {
       console.error('Root FFmpeg init failed:', err)
     })
+
+    loadVideos();
 
     if (loaded) {
       SplashScreen.hideAsync()
