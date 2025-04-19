@@ -84,11 +84,11 @@ export default function HomeScreen() {
       />
 
       <TouchableOpacity
-        className="absolute bottom-8 right-8 w-16 h-16 rounded-full justify-center items-center shadow-lg bg-white border-2 border-black"
+        className="absolute bottom-8 right-8 w-16 h-16 rounded-xl justify-center items-center shadow-2xl bg-white border-2 border-black"
         onPress={handleAddVideo}
         activeOpacity={0.8}
       >
-        <IconSymbol name="plus" size={24} color={themeColors.tint} />
+        <IconSymbol name="plus" size={24} color={themeColors.icon} />
       </TouchableOpacity>
     </ThemedView>
   )
