@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Vidiary - Video Diary App
 
 ## Overview
@@ -12,177 +14,55 @@ Vidiary is a React Native application that allows users to create video diaries 
 - **Video Details:** Users can view the selected video with its name and description.
 - **Edit Video:** Users can edit the name and description of a cropped video.
 
+## App APK, Photos, and Usage Video
+
+[Vidiary app APK, photos, and usage video](https://drive.google.com/drive/folders/1FCQVjhiRz49Jvk6Hh2pEDOJ1fP_LrB8D?usp=sharing)
+
+## How it Works
+
+1.  **Select Video:** Choose a video from the device's library.
+2.  **Crop Segment:** Use the scrubber to select a 5-second segment. FFmpeg processes the cropping in the background.
+3.  **Add Metadata:** Provide a name and description for the video diary entry.
+4.  **Save:** The cropped video and metadata are saved locally using Expo SQLite.
+5.  **View & Edit:** Browse saved video entries, view details, or edit metadata.
+
 ## Technologies Used
 
-- **Core Technologies:**
-  - [Expo](https://expo.dev/): Base framework for React Native development.
-  - [Expo Router](https://expo.github.io/router/): For implementing app navigation.
-  - [Zustand](https://github.com/pmndrs/zustand): State management solution.
-  - [Tanstack Query](https://tanstack.com/query/latest): To manage async logic and the FFMPEG cropping process.
-  - [FFMPEG](https://ffmpeg.org/): Core library for video processing.
-  - [NativeWind](https://www.nativewind.dev/): Styling solution.
-  - [Expo Video](https://docs.expo.dev/versions/latest/sdk/video/): Video rendering and playback.
-  - [Expo SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/): For structured, persistent storage.
-  - [React Native Reanimated](https://docs.expo.dev/versions/latest/sdk/reanimated/): For animations.
-  - [Zod](https://zod.dev/): Validation schemas for form handling.
+- **Core Framework & Navigation:**
+  - [Expo](https://expo.dev/): React Native framework.
+  - [Expo Router](https://expo.github.io/router/): File-based routing.
+  - [React Native Reanimated](https://docs.expo.dev/versions/latest/sdk/reanimated/): Animations.
+- **UI & Styling:**
+  - [NativeWind](https://www.nativewind.dev/): Tailwind CSS for React Native.
+  - [Expo Vector Icons](https://docs.expo.dev/guides/icons/): Icon library.
+- **State Management & Data Fetching:**
+  - [Zustand](https://github.com/pmndrs/zustand): Simple state management.
+  - [Tanstack Query](https://tanstack.com/query/latest): Managing async operations (like video processing).
+- **Video Processing & Playback:**
+  - [FFmpeg (via `ffmpeg-kit-react-native`)](https://github.com/arthenica/ffmpeg-kit): Video cropping and thumbnail generation.
+  - [Expo Video](https://docs.expo.dev/versions/latest/sdk/video/): Video playback component.
+  - [Expo Image Picker](https://docs.expo.dev/versions/latest/sdk/image-picker/): Selecting videos from the library.
+- **Data Storage & Validation:**
+  - [Expo SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/): Local database storage.
+  - [Zod](https://zod.dev/): Schema validation for metadata form.
 
 ## Project Structure
 
-```bash
-vidiary/
-├── .gitignore
-├── app.json
-├── app.txt
-├── babel.config.js
-├── eas.json
-├── global.css
-├── metro.config.js
-├── nativewind-env.d.ts
-├── package-lock.json
-├── package.json
-├── README.md
-├── tailwind.config.js
-├── tsconfig.json
-├── app/
-│   ├── _layout.tsx
-│   ├── +not-found.tsx
-│   ├── index.tsx
-│   ├── modal/
-│   │   └── crop/
-│   │       ├── crop.tsx
-│   │       ├── index.tsx
-│   │       └── metadata.tsx
-│   └── video/
-│       ├── [id].tsx
-│       └── edit/
-│           └── [id].tsx
-├── assets/
-│   ├── fonts/
-│   │   └── SpaceMono-Regular.ttf
-│   └── images/
-│       ├── adaptive-icon.png
-│       ├── colored-icon.png
-│       ├── dark-icon.png
-│       ├── icon-big-play.png
-│       ├── icon.png
-│       └── splash-icon.png
-├── components/
-│   ├── MetadataForm.tsx
-│   ├── ThemedText.tsx
-│   ├── ThemedView.tsx
-│   ├── VideoCard.tsx
-│   ├── VideoPlayer.tsx
-│   ├── VideoScrubber.tsx
-│   └── ui/
-│       ├── IconSymbol.ios.tsx
-│       └── IconSymbol.tsx
-├── constants/
-│   └── Colors.ts
-├── hooks/
-│   ├── useColorScheme.ts
-│   └── useThemeColor.ts
-├── scripts/
-│   └── reset-project.js
-├── services/
-│   ├── database.ts
-│   └── videoProcessor.ts
-└── store/
-    └── videoStore.ts
-```
+The project follows a standard Expo project structure:
 
-### Key Files and Directories
+- `app/`: Contains all screens and navigation logic, powered by Expo Router. Includes modals for cropping/metadata and screens for viewing/editing videos.
+- `assets/`: Static assets like fonts and images.
+- `components/`: Reusable UI components (e.g., `VideoCard`, `VideoPlayer`, `MetadataForm`).
+- `constants/`: Application constants (e.g., `Colors`).
+- `hooks/`: Custom React hooks (e.g., `useColorScheme`).
+- `scripts/`: Utility scripts (e.g., `reset-project.js`).
+- `services/`: Core application logic, separated from UI.
+  - `database.ts`: SQLite database interactions.
+  - `videoProcessor.ts`: FFmpeg video cropping and thumbnail generation logic.
+- `store/`: Global state management using Zustand (`videoStore.ts`).
+- `types/`: TypeScript type definitions.
 
-- `app.json`: Contains the app configuration, including name, version, and plugins.
-- `app.txt`: Describes the app's objective, features, and required technologies.
-- `babel.config.js`: Configures Babel, a JavaScript compiler.
-- `eas.json`: Configuration file for Expo Application Services (EAS).
-- `global.css`: Global CSS file for styling.
-- `metro.config.js`: Configuration file for Metro, the JavaScript bundler.
-- `package.json`: Contains project dependencies and scripts.
-- `tailwind.config.js`: Configuration file for Tailwind CSS.
-- `tsconfig.json`: Configuration file for TypeScript.
-- `app/`: Contains the app's screens and navigation logic.
-  - `_layout.tsx`: Defines the root layout of the app.
-  - `index.tsx`: The main screen of the app, displaying the list of videos.
-  - `modal/crop/`: Contains the video cropping modal screens.
-    - `crop.tsx`: Implements the video cropping functionality.
-    - `index.tsx`: Allows users to select a video from their device.
-    - `metadata.tsx`: Allows users to add metadata to the cropped video.
-  - `video/`: Contains the video details and edit screens.
-    - `[id].tsx`: Displays the details of a selected video.
-    - `edit/[id].tsx`: Allows users to edit the metadata of a video.
-- `assets/`: Contains fonts and images used in the app.
-- `components/`: Contains reusable UI components.
-  - `MetadataForm.tsx`: Implements the form for adding metadata to videos.
-  - `ThemedText.tsx`: A component for themed text.
-  - `ThemedView.tsx`: A component for themed views.
-  - `VideoCard.tsx`: Displays a video card in the list of videos.
-  - `VideoPlayer.tsx`: Implements the video player.
-  - `VideoScrubber.tsx`: Implements the video scrubber for selecting the crop segment.
-  - `ui/`: Contains UI components.
-    - `IconSymbol.ios.tsx`: Implements the IconSymbol component for iOS.
-    - `IconSymbol.tsx`: Implements the IconSymbol component for Android and web.
-- `constants/`: Contains constant values used in the app.
-  - `Colors.ts`: Defines the colors used in the app.
-- `hooks/`: Contains custom React hooks.
-  - `useColorScheme.ts`: A hook for accessing the color scheme.
-  - `useThemeColor.ts`: A hook for accessing themed colors.
-- `scripts/`: Contains utility scripts.
-  - `reset-project.js`: A script to reset the project to a blank state.
-- `services/`: Contains services for data access and video processing.
-  - `database.ts`: Implements the database logic using Expo SQLite.
-  - `videoProcessor.ts`: Implements the video processing logic using FFMPEG.
-- `store/`: Contains the Zustand store for managing the app's state.
-  - `videoStore.ts`: Defines the video store.
-- `types/`: Contains TypeScript type definitions.
-  - `ffmpeg-kit-react-native.d.ts`: Type definitions for the ffmpeg-kit-react-native library.
-
-## Dependencies
-
-The project uses a variety of dependencies, including:
-
-- `@craftzdog/react-native-buffer`: "^6.0.5"
-- `@expo/vector-icons`: "^14.0.2"
-- `@react-native-async-storage/async-storage`: "1.23.1"
-- `@react-navigation/bottom-tabs`: "^7.2.0"
-- `@react-navigation/native`: "^7.0.14"
-- `@tanstack/react-query`: "^5.74.3"
-- `expo`: "~52.0.46"
-- `expo-av`: "^15.0.2"
-- `expo-blur`: "~14.0.3"
-- `expo-build-properties`: "^0.13.2"
-- `expo-constants`: "~17.0.8"
-- `expo-dev-client`: "~5.0.20"
-- `expo-font`: "~13.0.4"
-- `expo-haptics`: "~14.0.1"
-- `expo-image-picker`: "^16.0.6"
-- `expo-linking`: "~7.0.5"
-- `expo-router`: "~4.0.20"
-- `expo-splash-screen`: "~0.29.24"
-- `expo-sqlite`: "~15.1.4"
-- `expo-status-bar`: "~2.0.1"
-- `expo-symbols`: "~0.2.2"
-- `expo-system-ui`: "~4.0.9"
-- `expo-video`: "^2.0.6"
-- `expo-web-browser`: "~14.0.2"
-- `ffmpeg-kit-react-native`: "^6.0.2"
-- `nanoid`: "^5.1.5"
-- `nativewind`: "^4.1.23"
-- `react`: "18.3.1"
-- `react-dom`: "18.3.1"
-- `react-native`: "0.76.9"
-- `react-native-crypto`: "^2.2.0"
-- `react-native-gesture-handler`: "~2.20.2"
-- `react-native-reanimated`: "3.16.2"
-- `react-native-safe-area-context`: "4.12.0"
-- `react-native-screens`: "~4.4.0"
-- `react-native-web`: "~0.19.13"
-- `react-native-webview`: "13.12.5"
-- `stream-browserify`: "^3.0.0"
-- `tailwindcss`: "^3.4.17"
-- `yup`: "^1.6.1"
-- `zod`: "^3.24.2"
-- `zustand`: "^5.0.3"
+Key configuration files include `app.json`, `package.json`, `tailwind.config.js`, and `eas.json`.
 
 ## Getting Started
 
@@ -231,3 +111,7 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details (if available) or visit [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
